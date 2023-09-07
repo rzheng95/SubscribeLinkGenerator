@@ -91,7 +91,8 @@ public class SubscriptionService {
      * @return a full subscribe link
      */
     private String assembleSubscribeLink(String subKey, String urlEncodedRemarks) {
-        String subLink = "http://" + ipAddress + "/sub-link/" + subKey;
+        String port = "8080";
+        String subLink = "http://" + ipAddress + ":" + port + "/sub-link/" + subKey;
         String base64EncodedSubLink = Base64.getEncoder().encodeToString(subLink.getBytes(StandardCharsets.UTF_8));
         return "sub://" + base64EncodedSubLink + "#" + urlEncodedRemarks;
     }

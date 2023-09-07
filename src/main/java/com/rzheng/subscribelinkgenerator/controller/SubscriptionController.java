@@ -3,6 +3,7 @@ package com.rzheng.subscribelinkgenerator.controller;
 import com.rzheng.subscribelinkgenerator.service.SubscriptionService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -35,9 +36,10 @@ public class SubscriptionController {
     }
 
     // subKey must be url encoded
-    @GetMapping("/sub-link/{subKey}")
-    public String getProxiesBySubKey(@PathVariable String subKey) throws IOException {
+    @GetMapping("/sub-link")
+    public String getProxiesBySubKey(@RequestParam("subKey") String subKey) throws IOException {
         // Controller reads the url encoded sub key and decode it by default.
+        System.out.println(subKey);
         return this.subscriptionService.getProxiesBySubKey(subKey);
     }
 }
