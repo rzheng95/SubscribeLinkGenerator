@@ -39,7 +39,6 @@ public class SubscriptionController {
     @GetMapping("/sub-link")
     public String getProxiesBySubKey(@RequestParam("subKey") String subKey) throws IOException {
         // Controller reads the url encoded sub key and decode it by default.
-        System.out.println(subKey);
         return this.subscriptionService.getProxiesBySubKey(subKey);
     }
 }

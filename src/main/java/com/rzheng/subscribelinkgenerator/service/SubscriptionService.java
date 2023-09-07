@@ -86,13 +86,13 @@ public class SubscriptionService {
      * Assemble the subscribe link.
      * sub://<base64 encoded subscribe link>#<url encoded remarks>
      *
-     * @param subKey            subscription key
+     * @param urlEncodedSubKey            subscription key
      * @param urlEncodedRemarks url encoded remarks
      * @return a full subscribe link
      */
-    private String assembleSubscribeLink(String subKey, String urlEncodedRemarks) {
+    private String assembleSubscribeLink(String urlEncodedSubKey, String urlEncodedRemarks) {
         String port = "8080";
-        String subLink = "http://" + ipAddress + ":" + port + "/sub-link/" + subKey;
+        String subLink = "http://" + ipAddress + ":" + port + "/sub-link?subKey=" + urlEncodedSubKey;
         String base64EncodedSubLink = Base64.getEncoder().encodeToString(subLink.getBytes(StandardCharsets.UTF_8));
         return "sub://" + base64EncodedSubLink + "#" + urlEncodedRemarks;
     }
