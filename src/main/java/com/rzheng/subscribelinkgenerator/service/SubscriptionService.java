@@ -91,7 +91,7 @@ public class SubscriptionService {
     private String assembleSubscribeLink(String urlEncodedSubKey, String urlEncodedRemarks) {
         String port = "8080";
         String subLink = "http://" + ipAddress + ":" + port + "/sub-link?subKey=" + urlEncodedSubKey;
-        String base64EncodedSubLink = Base64.getEncoder().encodeToString(subLink.getBytes(StandardCharsets.UTF_8));
+        String base64EncodedSubLink = this.base64Encode(subLink);
         return "sub://" + base64EncodedSubLink + "#" + urlEncodedRemarks;
     }
 
@@ -119,16 +119,21 @@ public class SubscriptionService {
             if (contactInfo != null && !contactInfo.isEmpty()) {
                 String[] contactInfoArray = contactInfo.split(";");
                 for (String contact : contactInfoArray) {
-                    String dummyLink = "159.65.237.131:9000:auth_chain_b:aes-256-cfb:tls1.2_ticket_auth:cmljaGFyZA==?remarks=" + contact;
-                    String base64EncodedDummyLink = Base64.getEncoder().encodeToString((dummyLink).getBytes(StandardCharsets.UTF_8));
+                    String base64EncodedContact = this.base64Encode(contact);
+                    String dummyLink = "159.65.237.131:9000:auth_chain_b:aes-256-cfb:tls1.2_ticket_auth:cGFzc3dvcmQ=remarks=" + base64EncodedContact;
+                    String base64EncodedDummyLink = this.base64Encode(dummyLink);
                     fileContent.insert(0, "ssr://" + base64EncodedDummyLink + "\n");
                 }
             }
 
-            return Base64.getEncoder().encodeToString(fileContent.toString().getBytes(StandardCharsets.UTF_8));
+            return this.base64Encode(fileContent.toString());
         }
         log.info("Subscription {} NOT found!", urlEncodedSubKey);
         return "";
+    }
+
+    private String base64Encode(String str) {
+        return Base64.getEncoder().encodeToString(str.getBytes(StandardCharsets.UTF_8));
     }
 }
 
