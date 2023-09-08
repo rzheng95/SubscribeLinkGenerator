@@ -43,7 +43,7 @@ public class SubscriptionService {
      * @param days number of days for the subscription before it expires
      * @return a URL encoded ASE encrypted subscription key
      */
-    private String processSubscription(int days) throws Exception {
+    private String processSubscription(int days, String contactInfo) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         String today = sdf.format(new Date());
         log.info("Encrypting {}:{}", today, days);
@@ -63,30 +63,28 @@ public class SubscriptionService {
             log.info("Subscription {} NOT found! Creating new subscription...", urlEncodedEncryptedKey);
             Subscription subscription = new Subscription();
             subscription.setSubKey(urlEncodedEncryptedKey);
+            subscription.setContactInfo(contactInfo);
 
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, days);
             subscription.setExpiration(cal.getTime());
+
             this.subscriptionRepository.save(subscription);
             return subscription.getSubKey();
         }
     }
 
-    public String getSubscribeLink(int days) throws Exception {
-        // 个人独享
-        final String defaultRemarks = "%E4%B8%AA%E4%BA%BA%E7%8B%AC%E4%BA%AB";
-        return this.getSubscribeLinkWithRemarks(days, defaultRemarks);
-    }
-
-    public String getSubscribeLinkWithRemarks(int days, String urlEncodedRemarks) throws Exception {
-        return this.assembleSubscribeLink(this.processSubscription(days), urlEncodedRemarks);
+    public String getSubscribeLinkWithRemarksAndContactInfo(int days, String remarks, String contactInfo) throws Exception {
+        String subKey = this.processSubscription(days, contactInfo);
+        String urlEncodedRemark = URLEncoder.encode(remarks, StandardCharsets.UTF_8);
+        return this.assembleSubscribeLink(subKey, urlEncodedRemark);
     }
 
     /**
      * Assemble the subscribe link.
      * sub://<base64 encoded subscribe link>#<url encoded remarks>
      *
-     * @param urlEncodedSubKey            subscription key
+     * @param urlEncodedSubKey  subscription key
      * @param urlEncodedRemarks url encoded remarks
      * @return a full subscribe link
      */
@@ -115,18 +113,42 @@ public class SubscriptionService {
                 return "";
             }
 
-            return this.readFileAndEncodeToBase64(masterLinksFilePath);
+            StringBuilder fileContent = new StringBuilder(Files.readString(Paths.get(masterLinksFilePath)));
+            String contactInfo = subscription.getContactInfo();
+
+            if (contactInfo != null && !contactInfo.isEmpty()) {
+                String[] contactInfoArray = contactInfo.split(";");
+                for (String contact : contactInfoArray) {
+                    String dummyLink = "159.65.237.131:9000:auth_chain_b:aes-256-cfb:tls1.2_ticket_auth:cmljaGFyZA==?remarks=" + contact;
+                    String base64EncodedDummyLink = Base64.getEncoder().encodeToString((dummyLink).getBytes(StandardCharsets.UTF_8));
+                    fileContent.insert(0, "ssr://" + base64EncodedDummyLink + "\n");
+                }
+            }
+
+            return Base64.getEncoder().encodeToString(fileContent.toString().getBytes(StandardCharsets.UTF_8));
         }
         log.info("Subscription {} NOT found!", urlEncodedSubKey);
         return "";
     }
-
-
-    private String readFileAndEncodeToBase64(String filePath) throws IOException {
-        // Read all bytes from the file
-        byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
-
-        // Encode the bytes to Base64
-        return Base64.getEncoder().encodeToString(fileContent);
-    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

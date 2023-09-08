@@ -15,12 +15,14 @@ public class Subscription {
 
     private Date expiration;
 
+    private String contactInfo;
+
     public String getSubKey() {
         return subKey;
     }
 
-    public void setSubKey(String key) {
-        this.subKey = key;
+    public void setSubKey(String subKey) {
+        this.subKey = subKey;
     }
 
     public Date getExpiration() {
@@ -29,5 +31,13 @@ public class Subscription {
 
     public void setExpiration(Date expiration) {
         this.expiration = expiration;
+    }
+
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
     }
 }
