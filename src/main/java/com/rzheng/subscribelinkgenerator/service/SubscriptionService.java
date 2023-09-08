@@ -120,7 +120,7 @@ public class SubscriptionService {
                 String[] contactInfoArray = contactInfo.split(";");
                 for (String contact : contactInfoArray) {
                     String base64EncodedContact = this.base64Encode(contact);
-                    String dummyLink = "159.65.237.131:9000:auth_chain_b:aes-256-cfb:tls1.2_ticket_auth:cGFzc3dvcmQ=remarks=" + base64EncodedContact;
+                    String dummyLink = "159.65.237.131:9000:auth_chain_b:aes-256-cfb:tls1.2_ticket_auth:cGFzc3dvcmQ=?remarks=" + base64EncodedContact;
                     String base64EncodedDummyLink = this.base64Encode(dummyLink);
                     fileContent.insert(0, "ssr://" + base64EncodedDummyLink + "\n");
                 }
