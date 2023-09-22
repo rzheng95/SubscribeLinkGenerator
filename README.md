@@ -1,6 +1,5 @@
 # Subscribe Link Generator for Proxy Clients
-[![Build Status](https://travis-ci.com/zhenghaoz/subscribe-link-generator.svg?branch=master)](https://travis-ci.com/zhenghaoz/subscribe-link-generator)
-[![License](https://img.shields.io/github/license/zhenghaoz/subscribe-link-generator)]()
+[![License](https://img.shields.io/badge/License-8A2BE2)](https://github.com/rzheng95/SubscribeLinkGenerator/blob/master/LICENSE)
 
 ## Description
 A simple Spring-Boot application that generates a subscribe link with base64 encoded content for proxy clients.
